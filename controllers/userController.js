@@ -2,11 +2,6 @@ const cloudinary = require("cloudinary").v2;
 const User = require("./../models/userModel");
 const validator = require("validator");
 
-cloudinary.config({
-  cloud_name: "dj37vywde",
-  api_key: "388516618234788",
-  api_secret: "18YwXh4vq8K8xazeTsf16rk62cE",
-});
 
 exports.addUser = async (req, res) => {
   try {
@@ -35,11 +30,13 @@ exports.addUser = async (req, res) => {
   }
 };
 
-exports.addImage = async (req, res) => {
+exports.addImageOrVideo = async (req, res) => {
   try {
-    const { image, email } = req.body;
+    const { imageOrVideo, email } = req.body;
 
-    if (!validator.isURL(image)) {
+    console.log(imageOrVideo, email);
+
+    if (!validator.isURL(imageOrVideo)) {
       return res.status(400).json({
         message: "Invalid Image URL",
       });
@@ -53,7 +50,7 @@ exports.addImage = async (req, res) => {
       });
     }
 
-    user.images.push(image);
+    user.imagesOrVideos.push(imageOrVideo);
     await user.save();
 
     res.status(200).json({
@@ -61,6 +58,7 @@ exports.addImage = async (req, res) => {
       message: "Image added successfully !",
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       status: "fail",
       message: "something went wrong",
@@ -68,7 +66,7 @@ exports.addImage = async (req, res) => {
   }
 };
 
-exports.getImages = async (req, res) => {
+exports.getImagesOrVideos = async (req, res) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ email });
@@ -76,7 +74,7 @@ exports.getImages = async (req, res) => {
     if (user) {
       return res.status(200).json({
         status: "success",
-        images: user.images,
+        imagesOrVideos: user.imagesOrVideos,
       });
     }
 
@@ -90,7 +88,7 @@ exports.getImages = async (req, res) => {
   }
 };
 
-exports.deleteImage = async (req, res) => {
+exports.deleteImageOrVideo = async (req, res) => {
   try {
     const { email, imageURL } = req.body;
     const user = await User.findOne({ email });
@@ -99,7 +97,9 @@ exports.deleteImage = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    user.images = user.images.filter((image) => image !== imageURL);
+    user.imagesOrVideos = user.imagesOrVideos.filter(
+      (imageOrVideo) => imageOrVideo !== imageURL
+    );
     await user.save();
 
     return res

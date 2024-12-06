@@ -20,10 +20,12 @@ const userSchema = new mongoose.Schema({
     validate: [validator.isEmail, "Please provide a valid email"],
   },
 
-  images: {
+  imagesOrVideos: {
     type: [String],
   },
+  
 });
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;
+

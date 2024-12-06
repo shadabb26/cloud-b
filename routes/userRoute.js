@@ -4,10 +4,10 @@ const router = express.Router();
 
 router
   .post("/user", userController.addUser)
-  .post("/image", userController.addImage)
+  .post("/image", userController.addImageOrVideo)
   .post("/count", userController.imageCount)
-  .post("/images", userController.getImages);
+  .post("/images", userController.getImagesOrVideos);
 
-router.delete("/delete", userController.deleteImage);
+router.delete("/delete", userController.deleteImageOrVideo);
 
 module.exports = router;
